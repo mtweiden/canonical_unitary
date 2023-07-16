@@ -32,9 +32,8 @@ def to_canonical_unitary(unitary : np.array) -> np.array:
     global_phase_factor = np.exp(-1j * global_phase)
     special_unitary = global_phase_factor * unitary
     # Standardize speical unitary to account for exp(-i2pi/N) differences
-    index = np.where(
-        np.isclose(special_unitary, 0, atol=1e-4), 0, 1
-    )[0].tolist().index(1)
+    first_row_mags = np.linalg.norm(special_unitary[0,:], ord=2)
+    index = np.argmax(first_row_mags)
     std_phase = np.angle(special_unitary[0,index])
     correction_phase = 0 - std_phase
     std_correction = np.exp(1j * correction_phase)
